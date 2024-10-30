@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: swallow_data_analysis
+  text:
+    header:
+      list: index, first, longitude, latitude
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:identifier.db
