@@ -59,12 +59,12 @@ public class FileInputSystemService implements FileInputSystem {
 
                 log.info(file.getOriginalFilename());
             }
+
+            return destinationFile.toString();
         }
         catch (IOException e) {
             throw new StorageException("Failed to store file.", e);
         }
-
-        return file.getOriginalFilename();
     }
 
     @Override

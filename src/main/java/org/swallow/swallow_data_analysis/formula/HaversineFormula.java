@@ -3,11 +3,11 @@ package org.swallow.swallow_data_analysis.formula;
 import org.springframework.stereotype.Component;
 
 @Component
-public class HaversineFormlua implements Formlua {
+public class HaversineFormula implements Formula {
     private static final double EARTH_RADIUS = 6371;
 
     @Override
-    public double formlua(double lat1, double lon1, double lat2, double lon2) {
+    public double formula(double lat1, double lon1, double lat2, double lon2) {
         // 위도와 경도를 라디안으로 변환
         double lat1Rad = Math.toRadians(lat1);
         double lon1Rad = Math.toRadians(lon1);
