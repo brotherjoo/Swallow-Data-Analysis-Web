@@ -30,7 +30,7 @@ public class SwallowFileConvertService implements FileConvertSystem {
         Scanner scanner = new Scanner(new FileInputStream(fileRoot));
         scanner.useDelimiter("\n");
         int[] index = new int[header.size()];
-        List<Swallow> swallowList = new LinkedList<Swallow>();
+        List<Swallow> swallowList = new LinkedList<>();
         String[] headers = null;
         double prelon = 0, prelat = 0;
 
@@ -40,101 +40,77 @@ public class SwallowFileConvertService implements FileConvertSystem {
 
              for (int i = 0; i < headers.length; i++) {
                  if (header.contains(headers[i].toLowerCase())) {
-                     log.info("check");
                      index[j] = i;
                      j++;
                  }
              }
-
-             Arrays.stream(index)
-                     .forEach(x -> log.info(String.valueOf(x)));
 
         } else {
             throw new NotWriteFileAnyThingException("Not Write File Anything");
         }
 
         while (scanner.hasNext()) {
-            String[] text = scanner.next().split("\t");
-            Arrays.stream(text)
-                    .forEach(log::info);
-            Swallow s = new Swallow();
-            double longitude = 0, latitude = 0;
+            try {
+                String[] text = scanner.next().split("\t");
+                Swallow s = new Swallow();
+                double longitude = 0, latitude = 0;
 
-            for (int i : index) {
-                String str = text[i];
+                for (int i : index) {
+                    String str = text[i];
 
-                log.info(String.valueOf(i));
+                    switch (headers[i].toLowerCase()) {
+                        case "first":
+                            s.setDate(str);
+                            break;
 
-                log.info(headers[i].toLowerCase());
+                        case "index":
+                            s.setNumber(Integer.parseInt(str));
+                            break;
 
-                switch (headers[i].toLowerCase()) {
-                    case "first":
-                        s.setDate(str);
-                        break;
+                        case "longitude":
+                            longitude = Double.parseDouble(str);
+                            s.setLongitude(longitude);
+                            s.setLongitudeDifference(Math.abs(longitude - prelon));
+                            break;
 
-                    case "index":
-                        log.info(str);
-                        s.setNumber(Integer.parseInt(str));
-                        break;
-
-                    case "longitude":
-                        log.info(str);
-                        longitude = Double.parseDouble(str);
-                        log.info(String.valueOf(longitude));
-                        s.setLongitude(longitude);
-                        s.setLongitudeDifference(Math.abs(longitude - prelon));
-                        break;
-
-                    case "latitude":
-                        latitude = Double.parseDouble(str);
-                        s.setLatitude(latitude);
-                        s.setLatitudeDifference(Math.abs(latitude - prelat));
-                        break;
+                        case "latitude":
+                            latitude = Double.parseDouble(str);
+                            s.setLatitude(latitude);
+                            s.setLatitudeDifference(Math.abs(latitude - prelat));
+                            break;
+                    }
                 }
+                s.setDistance(formula.formula(longitude, latitude, prelon, prelat));
+
+                prelon = s.getLongitude();
+                prelat = s.getLatitude();
+
+                ;
+
+                swallowList.add(s);
+            } catch (NumberFormatException e) {
+                log.info("nan");
             }
-            s.setDistance(formula.formula(longitude, latitude, prelon, prelat));
-
-            prelon = s.getLongitude();
-            prelat = s.getLatitude();
-
-            swallowList.add(s);
         }
 
         return swallowList;
     }
 
-//    private Swallow getSwallow(Integer i, String[] text, String[] headers, double prelon, double prelat) {
-//        int num = i;
-//        String str = text[num];
-//        Swallow s = new Swallow();
-//        double longitude = 0, latitude = 0;
-//
-//        Arrays.stream(text)
-//                .forEach(log::info);
-//
-//        switch (headers[num].toLowerCase()) {
-//            case "first":
-//                s.setDate(str);
-//            case "index":
-//                log.info(str);
-//                s.setNumber(Integer.getInteger(str));
-//            case "longitude":
-//                log.info(str);
-//                longitude = Double.parseDouble(str);
-//                log.info(String.valueOf(longitude));
-//                s.setLongitude(longitude);
-//                s.setLongitudeDifference(Math.abs(longitude - prelon));
-//            case "latitude":
-//                latitude = Double.parseDouble(str);
-//                s.setLatitude(latitude);
-//                s.setLatitudeDifference(Math.abs(latitude - prelat));
-//        }
-//
-//        s.setDistance(formula.formula(longitude, latitude, prelon, prelat));
-//        log.info(String.valueOf(longitude));
-//
-//        return s;
-//    }
+    @Override
+    public List<Swallow> preprocessing(List<Swallow> swallowList) {
+        double sum = 0;
+
+        for (Swallow swallow:swallowList) {
+            sum += swallow.getDistance();
+        }
+
+        double percent = (sum * 0.95) / swallowList.size();
+        log.info("percent: " + percent);
+
+        swallowList.removeIf(swallow -> swallow.getDistance() > percent);
+
+        return  swallowList;
+    }
 
     @Override
     public void MakeCsvFile(String filename) {

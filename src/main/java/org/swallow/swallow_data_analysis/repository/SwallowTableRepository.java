@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface SwallowTableRepository extends JpaRepository<SwallowTable, String> {
 
-    Optional<SwallowTable> findSwallowTableById(String id);
+    Optional<SwallowTable> findSwallowTableByName(String tableName);
 }

@@ -1,5 +1,6 @@
+DROP TABLE IF EXISTS swallow;
 CREATE TABLE IF NOT EXISTS swallow (
-    id TEXT NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     index_number INTEGER NOT NULL ,
     date TEXT NOT NULL ,
     longitude REAL NOT NULL ,
@@ -7,15 +8,11 @@ CREATE TABLE IF NOT EXISTS swallow (
     longitude_difference REAL NOT NULL ,
     latitude_difference REAL NOT NULL ,
     distance REAL NOT NULL,
-    table_number TEXT NOT NULL ,
-    PRIMARY KEY (id),
-    FOREIGN KEY (table_number) REFERENCES swallowtable(id)
+    table_number INTEGER,
+    FOREIGN KEY (table_number) REFERENCES swallow_table(id)
 );
 
-CREATE TABLE IF NOT EXISTS  swallowtable(
-    id TEXT NOT NULL ,
-    date TEXT NOT NULL ,
-    name TEXT NOT NULL ,
-    PRIMARY KEY (id)
+CREATE TABLE IF NOT EXISTS swallow_table(
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT ,
+    name TEXT NOT NULL UNIQUE
 );
-

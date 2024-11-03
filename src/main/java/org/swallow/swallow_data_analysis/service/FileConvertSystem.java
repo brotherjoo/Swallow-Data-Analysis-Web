@@ -11,5 +11,6 @@ public interface FileConvertSystem {
     String root_dir = new File("").getAbsolutePath();
 
     List<Swallow> readLine(String fileName) throws FileNotFoundException;
+    List<Swallow> preprocessing(List<Swallow> swallowList);
     void MakeCsvFile(String fileName);
 }
