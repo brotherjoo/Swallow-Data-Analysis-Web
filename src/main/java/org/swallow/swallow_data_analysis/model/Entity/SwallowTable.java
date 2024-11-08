@@ -1,4 +1,4 @@
-package org.swallow.swallow_data_analysis.model;
+package org.swallow.swallow_data_analysis.model.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

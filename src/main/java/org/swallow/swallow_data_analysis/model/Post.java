@@ -9,10 +9,10 @@ import java.util.List;
 @Data
 public class Post {
 
-    private SwallowTablePojo swallowTable;
-    private List<SwallowPojo> swallow;
+    private ResponseSwallowTable swallowTable;
+    private List<ResponseSwallow> swallow;
 
-    public Post(SwallowTablePojo swallowTable) {
+    public Post(ResponseSwallowTable swallowTable) {
         this.swallowTable = swallowTable;
     }
 

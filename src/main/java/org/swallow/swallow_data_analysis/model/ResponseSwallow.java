@@ -1,9 +1,10 @@
 package org.swallow.swallow_data_analysis.model;
 
 import lombok.Data;
+import org.swallow.swallow_data_analysis.model.Entity.Swallow;
 
 @Data
-public class SwallowPojo {
+public class ResponseSwallow {
 
     private Long id;
     private int number;
@@ -14,7 +15,7 @@ public class SwallowPojo {
     private double latitudeDifference;
     private double distance;
 
-    public SwallowPojo(Swallow swallow) {
+    public ResponseSwallow(Swallow swallow) {
         id = swallow.getId();
         number = swallow.getNumber();
         date = swallow.getDate();

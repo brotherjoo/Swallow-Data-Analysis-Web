@@ -1,4 +1,4 @@
-package org.swallow.swallow_data_analysis.model;
+package org.swallow.swallow_data_analysis.model.Entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +21,6 @@ public class Swallow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "index_number")

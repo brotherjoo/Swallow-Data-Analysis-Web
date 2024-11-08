@@ -1,6 +1,6 @@
 package org.swallow.swallow_data_analysis.service;
 
-import org.swallow.swallow_data_analysis.model.Swallow;
+import org.swallow.swallow_data_analysis.model.Entity.Swallow;
 
 import java.io.File;
 import java.io.FileNotFoundException;

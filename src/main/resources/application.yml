@@ -4,16 +4,12 @@ spring:
   text:
     header:
       list: index, first, longitude, latitude
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: create # update
   datasource:
-    driver-class-name: org.sqlite.JDBC
     url: jdbc:sqlite:mydb.db
-    jpa:
-      open-in-view: false
-      database-platform: org.hibernate.community.dialect.SQLiteDialect
-      hibernate:
-        ddl-auto: update
-      properties:
-        hibernate:
-          dialect: org.hibernate.community.dialect.SQLiteDialect
+    driver-class-name: org.sqlite.JDBC
     username: admin
     password: admin

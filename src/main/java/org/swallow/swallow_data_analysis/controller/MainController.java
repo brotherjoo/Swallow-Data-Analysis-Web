@@ -7,6 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.swallow.swallow_data_analysis.model.*;
+import org.swallow.swallow_data_analysis.model.ResponseSwallow;
+import org.swallow.swallow_data_analysis.model.ResponseSwallowTable;
+import org.swallow.swallow_data_analysis.model.Entity.Swallow;
+import org.swallow.swallow_data_analysis.model.Entity.SwallowTable;
 import org.swallow.swallow_data_analysis.repository.SwallowRepository;
 import org.swallow.swallow_data_analysis.repository.SwallowTableRepository;
 import org.swallow.swallow_data_analysis.service.FileConvertSystem;
@@ -75,10 +79,10 @@ public class MainController {
          Post post = new Post();
          SwallowTable swallowTable = swallowTableOptional.get();
          List<Swallow> swallows = swallowRepository.findSwallowBySwallow(swallowTable);
-         List<SwallowPojo> swallowPojos = swallows.stream().map(SwallowPojo::new).toList();
+         List<ResponseSwallow> responseSwallows = swallows.stream().map(ResponseSwallow::new).toList();
 
-         post.setSwallow(swallowPojos);
-         post.setSwallowTable(new SwallowTablePojo(swallowTable));
+         post.setSwallow(responseSwallows);
+         post.setSwallowTable(new ResponseSwallowTable(swallowTable));
 
          return post;
     }
@@ -92,12 +96,12 @@ public class MainController {
             Post post = new Post();
             List<Swallow> swallows = swallowRepository.findSwallowBySwallow(swallowTable);
 
-            List<SwallowPojo> swallowPojos = swallows.stream().map(SwallowPojo::new).toList();
+            List<ResponseSwallow> responseSwallows = swallows.stream().map(ResponseSwallow::new).toList();
 
-            SwallowTablePojo swallowTablePojo = new SwallowTablePojo(swallowTable);
+            ResponseSwallowTable responseSwallowTable = new ResponseSwallowTable(swallowTable);
 
-            post.setSwallow(swallowPojos);
-            post.setSwallowTable(swallowTablePojo);
+            post.setSwallow(responseSwallows);
+            post.setSwallowTable(responseSwallowTable);
 
             posts.add(post);
         }

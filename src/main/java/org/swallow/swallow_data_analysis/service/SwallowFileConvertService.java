@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.swallow.swallow_data_analysis.formula.Formula;
-import org.swallow.swallow_data_analysis.model.Swallow;
+import org.swallow.swallow_data_analysis.model.Entity.Swallow;
 import org.swallow.swallow_data_analysis.storage.NotWriteFileAnyThingException;
 
 import java.io.FileInputStream;
