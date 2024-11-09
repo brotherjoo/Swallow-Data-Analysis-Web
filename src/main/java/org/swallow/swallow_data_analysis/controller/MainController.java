@@ -1,111 +1,68 @@
 package org.swallow.swallow_data_analysis.controller;
 
+import java.io.FileNotFoundException;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.swallow.swallow_data_analysis.model.*;
-import org.swallow.swallow_data_analysis.model.ResponseSwallow;
-import org.swallow.swallow_data_analysis.model.ResponseSwallowTable;
-import org.swallow.swallow_data_analysis.model.Entity.Swallow;
-import org.swallow.swallow_data_analysis.model.Entity.SwallowTable;
-import org.swallow.swallow_data_analysis.repository.SwallowRepository;
-import org.swallow.swallow_data_analysis.repository.SwallowTableRepository;
-import org.swallow.swallow_data_analysis.service.FileConvertSystem;
-import org.swallow.swallow_data_analysis.service.FileInputSystem;
-import org.swallow.swallow_data_analysis.storage.NotFoundSwallowTableException;
+import org.swallow.swallow_data_analysis.model.Post;
+import org.swallow.swallow_data_analysis.service.EntityResisterService;
+import org.swallow.swallow_data_analysis.service.FindEntityService;
 
-import java.io.FileNotFoundException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
-@RestController
 @Slf4j
+@RestController
+@RequestMapping("/api")
 public class MainController {
 
-    private final FileInputSystem fileInputSystem;
-    private final FileConvertSystem fileConvertSystem;
-    private final SwallowTableRepository swallowTableRepository;
-    private final SwallowRepository swallowRepository;
+  private final EntityResisterService entityResisterService;
+  private final FindEntityService findEntityService;
 
-    @Autowired
-    public MainController(
-            FileInputSystem fileInputSystem,
-            FileConvertSystem fileConvertSystem,
-            SwallowTableRepository swallowTableRepository,
-            SwallowRepository swallowRepository) {
-        this.fileConvertSystem = fileConvertSystem;
-        this.fileInputSystem = fileInputSystem;
-        this.swallowRepository = swallowRepository;
-        this.swallowTableRepository = swallowTableRepository;
+  @Autowired
+  public MainController(EntityResisterService entityResisterService,
+      FindEntityService findEntityService) {
+    this.entityResisterService = entityResisterService;
+    this.findEntityService = findEntityService;
+  }
 
-        fileInputSystem.init();
+  @GetMapping("/")
+  public String[] check(@Value("${spring.text.header.list}") String[] list) {
+    return list;
+  }
+
+  @PostMapping("/swallow")
+  public ResponseEntity<Object> swallowRegisterController(
+      @RequestParam("file") MultipartFile file,
+      @RequestParam("title") String title) {
+
+    try {
+      entityResisterService.registerEntity(file, title);
+    } catch (FileNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found file");
     }
 
-    @GetMapping("/")
-    public String[] check(@Value("${spring.text.header.list}") String[] list) {
-        return list;
-    }
+    return ResponseEntity.status(HttpStatus.CREATED).body("ok");
+  }
 
-    @PostMapping("/swallow")
-    public ResponseEntity<Object> swallowRegisterController(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("title") String title) throws FileNotFoundException {
-        String fileRoot = fileInputSystem.store(file);
-        List<Swallow> swallowList = fileConvertSystem.readLine(fileRoot);
+  @GetMapping("/swallow/{tableName}")
+  public ResponseEntity<Post> swallowFindOneController(@PathVariable String tableName) {
+    Post post = (Post) findEntityService.findTable(tableName);
 
-        swallowList = fileConvertSystem.preprocessing(swallowList);
+    return ResponseEntity.status(HttpStatus.OK).body(post);
+  }
 
-        SwallowTable swallowTable = new SwallowTable();
-        swallowTable.setName(title);
-        swallowTableRepository.save(swallowTable);
+  @GetMapping("/swallow/all")
+  public ResponseEntity<List<Post>> swallowFindController() {
+    List<Post> posts = findEntityService.findTableAll();
 
-        swallowList.forEach(x -> x.setSwallow(swallowTable));
-        swallowRepository.saveAll(swallowList);
-
-        return ResponseEntity.ok("ok");
-    }
-
-    @GetMapping("/swallow/{tableName}")
-    public Post swallowFindOneController(@PathVariable String tableName) {
-         Optional<SwallowTable> swallowTableOptional = swallowTableRepository.findSwallowTableByName(tableName);
-
-         if (!swallowTableOptional.isPresent())
-             throw new NotFoundSwallowTableException("not found table");
-
-         Post post = new Post();
-         SwallowTable swallowTable = swallowTableOptional.get();
-         List<Swallow> swallows = swallowRepository.findSwallowBySwallow(swallowTable);
-         List<ResponseSwallow> responseSwallows = swallows.stream().map(ResponseSwallow::new).toList();
-
-         post.setSwallow(responseSwallows);
-         post.setSwallowTable(new ResponseSwallowTable(swallowTable));
-
-         return post;
-    }
-
-    @GetMapping("/swallow/all")
-    public List<Post> swallowFindController() {
-        List<Post> posts = new LinkedList<>();
-        List<SwallowTable> swallowTables = swallowTableRepository.findAll();
-
-        for (SwallowTable swallowTable: swallowTables) {
-            Post post = new Post();
-            List<Swallow> swallows = swallowRepository.findSwallowBySwallow(swallowTable);
-
-            List<ResponseSwallow> responseSwallows = swallows.stream().map(ResponseSwallow::new).toList();
-
-            ResponseSwallowTable responseSwallowTable = new ResponseSwallowTable(swallowTable);
-
-            post.setSwallow(responseSwallows);
-            post.setSwallowTable(responseSwallowTable);
-
-            posts.add(post);
-        }
-
-        return posts;
-    }
+    return ResponseEntity.status(HttpStatus.OK).body(posts);
+  }
 }
