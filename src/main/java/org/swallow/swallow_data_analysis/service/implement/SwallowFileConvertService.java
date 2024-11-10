@@ -34,9 +34,7 @@ public class SwallowFileConvertService implements FileConvertSystem {
     Scanner scanner = new Scanner(new FileInputStream(fileRoot));
     scanner.useDelimiter("\n");
     int[] index = new int[header.size()];
-    List<Swallow> swallowList = new LinkedList<>();
     String[] headers = null;
-    double prelon = 0, prelat = 0;
 
     if (scanner.hasNext()) {
       headers = scanner.next().split("\t");
@@ -52,6 +50,35 @@ public class SwallowFileConvertService implements FileConvertSystem {
     } else {
       throw new NotWriteFileAnyThingException("Not Write File Anything");
     }
+
+    return FileConvert(scanner, index, headers);
+  }
+
+  @Override
+  public List<Swallow> preprocessing(List<Swallow> swallowList) {
+    double sum = 0;
+
+    for (Swallow swallow : swallowList) {
+      sum += swallow.getDistance();
+    }
+
+    double percent = (sum * 0.95) / swallowList.size();
+    log.info("percent: {}", percent);
+
+    swallowList.removeIf(swallow -> swallow.getDistance() > percent);
+
+    return swallowList;
+  }
+
+  @Override
+  public void MakeCsvFile(String filename) {
+
+  }
+
+  private List<Swallow> FileConvert(Scanner scanner, int[] index, String[] headers) {
+    double prelon = 0, prelat = 0;
+    List<Swallow> swallowList = new LinkedList<>();
+    int nanNumber = 0;
 
     while (scanner.hasNext()) {
       try {
@@ -93,31 +120,12 @@ public class SwallowFileConvertService implements FileConvertSystem {
 
         swallowList.add(swallow);
       } catch (NumberFormatException e) {
-        log.info("nan");
+        nanNumber += 1;
       }
     }
 
-    return swallowList;
-  }
-
-  @Override
-  public List<Swallow> preprocessing(List<Swallow> swallowList) {
-    double sum = 0;
-
-    for (Swallow swallow : swallowList) {
-      sum += swallow.getDistance();
-    }
-
-    double percent = (sum * 0.95) / swallowList.size();
-    log.info("percent: {}", percent);
-
-    swallowList.removeIf(swallow -> swallow.getDistance() > percent);
+    log.info(String.valueOf(nanNumber));
 
     return swallowList;
-  }
-
-  @Override
-  public void MakeCsvFile(String filename) {
-
   }
 }
