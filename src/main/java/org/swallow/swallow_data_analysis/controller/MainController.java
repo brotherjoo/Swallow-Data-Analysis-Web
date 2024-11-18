@@ -1,5 +1,6 @@
 package org.swallow.swallow_data_analysis.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.FileNotFoundException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -14,14 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.swallow.swallow_data_analysis.model.Post;
+import org.swallow.swallow_data_analysis.model.SwallowPost;
 import org.swallow.swallow_data_analysis.service.EntityResisterService;
 import org.swallow.swallow_data_analysis.service.FindEntityService;
 
 @Slf4j
 @RestController
+@Tag(name = "제비 API", description = "제비 데이터의 등록과 확인, 삭제를 할 수 있는 API 입니다.")
 @RequestMapping("/api")
-public class MainController {
+public class MainController implements MainControllerDocs {
 
   private final EntityResisterService entityResisterService;
   private final FindEntityService findEntityService;
@@ -53,16 +55,16 @@ public class MainController {
   }
 
   @GetMapping("/swallow/{tableName}")
-  public ResponseEntity<Post> swallowFindOneController(@PathVariable String tableName) {
-    Post post = (Post) findEntityService.findTable(tableName);
+  public ResponseEntity<SwallowPost> swallowFindOneController(@PathVariable String tableName) {
+    SwallowPost swallowPost = (SwallowPost) findEntityService.findTable(tableName);
 
-    return ResponseEntity.status(HttpStatus.OK).body(post);
+    return ResponseEntity.status(HttpStatus.OK).body(swallowPost);
   }
 
   @GetMapping("/swallow/all")
-  public ResponseEntity<List<Post>> swallowFindController() {
-    List<Post> posts = findEntityService.findTableAll();
+  public ResponseEntity<List<SwallowPost>> swallowFindController() {
+    List<SwallowPost> swallowPosts = findEntityService.findTableAll();
 
-    return ResponseEntity.status(HttpStatus.OK).body(posts);
+    return ResponseEntity.status(HttpStatus.OK).body(swallowPosts);
   }
 }
