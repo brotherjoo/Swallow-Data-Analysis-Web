@@ -9,17 +9,15 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.swallow.swallow_data_analysis.exception.StorageException;
+import org.swallow.swallow_data_analysis.exception.StorageFileNotFoundException;
+import org.swallow.swallow_data_analysis.properties.StorageProperties;
 import org.swallow.swallow_data_analysis.service.FileInputSystem;
-import org.swallow.swallow_data_analysis.storage.StorageException;
-import org.swallow.swallow_data_analysis.storage.StorageFileNotFoundException;
-import org.swallow.swallow_data_analysis.storage.StorageProperties;
 
 @Slf4j
 @Service
@@ -27,8 +25,7 @@ public class FileInputSystemService implements FileInputSystem {
 
   private final Path rootLocation;
 
-  @Autowired
-  public FileInputSystemService(@Qualifier("StorageProperties") StorageProperties properties) {
+  public FileInputSystemService(StorageProperties properties) {
     if (properties.getLocation().trim().isEmpty()) {
       throw new StorageException("File upload location can not be Empty");
     }

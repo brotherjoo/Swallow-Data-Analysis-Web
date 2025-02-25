@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.swallow.swallow_data_analysis.exception.NotFoundSwallowTableException;
 import org.swallow.swallow_data_analysis.model.Entity.Swallow;
 import org.swallow.swallow_data_analysis.model.Entity.SwallowTable;
 import org.swallow.swallow_data_analysis.model.ResponseSwallow;
@@ -12,7 +13,6 @@ import org.swallow.swallow_data_analysis.model.SwallowPost;
 import org.swallow.swallow_data_analysis.repository.SwallowRepository;
 import org.swallow.swallow_data_analysis.repository.SwallowTableRepository;
 import org.swallow.swallow_data_analysis.service.FindEntityService;
-import org.swallow.swallow_data_analysis.storage.NotFoundSwallowTableException;
 
 @Service
 public class FindSwallowService implements FindEntityService {

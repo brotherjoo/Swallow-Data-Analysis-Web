@@ -10,13 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.swallow.swallow_data_analysis.formula.Formula;
+import org.swallow.swallow_data_analysis.component.formula.Formula;
+import org.swallow.swallow_data_analysis.exception.NotWriteFileAnyThingException;
 import org.swallow.swallow_data_analysis.model.Entity.Swallow;
 import org.swallow.swallow_data_analysis.service.FileConvertSystem;
-import org.swallow.swallow_data_analysis.storage.NotWriteFileAnyThingException;
 
 @Slf4j
 @Service
+@Deprecated
 public class SwallowFileConvertService implements FileConvertSystem {
 
   private final Formula formula;

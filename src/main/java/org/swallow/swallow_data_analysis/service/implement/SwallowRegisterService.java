@@ -13,6 +13,7 @@ import org.swallow.swallow_data_analysis.service.FileConvertSystem;
 import org.swallow.swallow_data_analysis.service.FileInputSystem;
 
 @Service
+@Deprecated
 public class SwallowRegisterService implements EntityResisterService {
 
   private final FileInputSystem fileInputSystem;

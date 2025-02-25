@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import org.swallow.swallow_data_analysis.model.Entity.Swallow;
 
+@Deprecated
 public interface FileConvertSystem {
 
   //  String root_dir = new File("").getAbsolutePath();

@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SwallowDataAnalysisApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SwallowDataAnalysisApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(SwallowDataAnalysisApplication.class, args);
+  }
 
 }
